@@ -1,26 +1,97 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@700,500,600,800,400&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-brand-bg: #09090B;
+  --color-brand-card: #111827;
+  --color-brand-surface: #1F2937;
+  --color-brand-border: #2D3748;
+  --color-brand-primary: #06B6D4;
+  --color-brand-secondary: #3B82F6;
+  --color-brand-success: #22C55E;
+  --color-brand-warning: #F59E0B;
+  --color-brand-danger: #EF4444;
+  --color-brand-text-primary: #F8FAFC;
+  --color-brand-text-secondary: #94A3B8;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Satoshi', var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-satoshi: 'Satoshi', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #09090B;
+  color: #F8FAFC;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Industrial & Neural Visual Patterns */
+.industrial-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(45, 55, 72, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(45, 55, 72, 0.08) 1px, transparent 1px);
+}
+
+.dots-pattern {
+  background-size: 20px 20px;
+  background-image: radial-gradient(circle, rgba(45, 55, 72, 0.15) 1px, transparent 1px);
+}
+
+.glow-overlay {
+  background: radial-gradient(circle 700px at 50% -100px, rgba(6, 182, 212, 0.06), rgba(59, 130, 246, 0.02), transparent 70%);
+}
+
+.glass-neural {
+  background-color: rgba(9, 9, 11, 0.55);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(45, 55, 72, 0.4);
+}
+
+.glass-command-card {
+  background: rgba(17, 24, 39, 0.58);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(103, 232, 249, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-command-card:hover {
+  transform: translateY(-6px);
+  border-color: #06B6D4;
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.12);
+}
+
+.glass-pill {
+  background: rgba(17, 24, 39, 0.65);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(103, 232, 249, 0.12);
+  border-radius: 9999px;
+}
+
+.glow-cyan-border {
+  border-color: rgba(6, 182, 212, 0.6);
+  box-shadow: 0 0 20px -2px rgba(6, 182, 212, 0.25);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #09090B;
+}
+::-webkit-scrollbar-thumb {
+  background: #2D3748;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1F2937;
 }
