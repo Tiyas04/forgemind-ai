@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import React from "react";
 import { motion } from "framer-motion";
@@ -35,13 +36,13 @@ export default function CTA() {
           </div>
 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="#launch"
+            <Link
+              href="/login"
               className="group flex items-center space-x-2 bg-linear-to-r from-brand-primary to-brand-secondary hover:brightness-110 active:scale-95 text-brand-bg font-heading font-bold text-sm px-8 py-4 rounded-2xl shadow-xl shadow-brand-primary/20 transition-all cursor-pointer"
             >
               <span>Launch ForgeMind</span>
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
+            </Link>
 
             <a
               href="#metrics"
