@@ -107,7 +107,7 @@ export default function Navbar() {
             </a>
             
             <a
-              href="#launch"
+              href="/auth"
               className="group flex items-center space-x-2 bg-linear-to-r from-brand-primary to-brand-secondary hover:brightness-110 active:scale-95 text-brand-bg font-satoshi font-semibold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-brand-primary/20 transition-all cursor-pointer"
             >
               <span>Launch Platform</span>
@@ -229,7 +229,7 @@ export default function Navbar() {
               </a>
 
               <a
-                href="#launch"
+                href="/auth"
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full flex items-center justify-center space-x-2 bg-linear-to-r from-brand-primary to-brand-secondary text-brand-bg font-satoshi font-semibold text-xs px-5 py-3.5 rounded-xl shadow-xl shadow-brand-primary/20 transition-all cursor-pointer"
               >

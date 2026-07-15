@@ -95,3 +95,46 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #1F2937;
 }
+
+/* Retro CRT and Laser Animations */
+@keyframes crt-flicker {
+  0% { opacity: 0.985; }
+  50% { opacity: 1; }
+  100% { opacity: 0.99; }
+}
+
+@keyframes scanline-laser {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 110%;
+  }
+}
+
+.crt-effect {
+  animation: crt-flicker 0.15s infinite;
+}
+
+.crt-scanlines::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+  background-size: 100% 4px;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+.scan-laser-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, transparent, rgba(6, 182, 212, 0.8), transparent);
+  box-shadow: 0 0 15px 4px rgba(6, 182, 212, 0.6);
+  animation: scanline-laser 4s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}

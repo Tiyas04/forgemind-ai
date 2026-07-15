@@ -91,7 +91,7 @@ export default function Hero() {
         {/* Primary Action Buttons */}
         <div className="pt-1 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="#launch"
+            href="/auth"
             className="group flex items-center space-x-2 bg-linear-to-r from-brand-primary to-brand-secondary hover:brightness-110 active:scale-95 text-brand-bg font-satoshi font-semibold text-sm px-8 py-3.5 rounded-xl shadow-xl shadow-brand-primary/25 transition-all cursor-pointer"
           >
             <span>Open Platform</span>
