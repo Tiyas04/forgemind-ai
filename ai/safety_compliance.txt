@@ -1,7 +1,0 @@
-SAFETY AUDIT: THERMAL MANAGEMENT SYSTEM
-Document ID: SAF-THM-099
-Regulatory Standard: OISD-STD-117 (Thermal Management Safety)
-
-Audit Finding: The pressure relief valve (Valve-R88) for the propylene oxide storage line was found to be operating at 55 PSI.
-Non-Conformance: The OISD-STD-117 regulatory threshold for this equipment is 45 PSI.
-Corrective Action: The system must be recalibrated immediately to ensure compliance. Failure to address this threshold violation within 24 hours will result in immediate suspension of operations per the Factory Act.

@@ -1,9 +1,0 @@
-MAINTENANCE LOG: REACTOR-R101
-Document ID: MNT-R101-2026
-Asset ID: Reactor-R101
-
-Operational Status: The reactor is currently undergoing scheduled inspection.
-Issue: Internal heat exchangers show signs of calcium carbonate scaling, which has reduced thermal efficiency by 15%.
-Maintenance Action: Technicians must perform a chemical descaling process using a mild acid solution.
-Schedule: Descaling must be completed within the next 48 hours to avoid critical reactor overheating.
-Part Required: Replacement Gasket-G99 is required for re-assembly.
