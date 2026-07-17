@@ -10,20 +10,5 @@ class GraphRetriever:
 
         self.repository = repository
 
-    def retrieve(
-
-        self,
-
-        entities,
-
-        depth=2
-
-    ):
-
-        return self.repository.expand(
-
-            entities,
-
-            depth
-
-        )
+    def retrieve(self, entities):
+        return self.repository.expand(entities=entities, doc_ids=None)

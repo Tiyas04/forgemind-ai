@@ -20,8 +20,10 @@ class IngestionService:
 
     def ingest(self, path: str) -> bool:
         loaded_data = self.loader.load(path)
+        document = loaded_data["document"]
         chunks = loaded_data["chunks"]
 
+        doc_id = document.doc_id
         for chunk in chunks:
             chunk.text = TextCleaner.clean(chunk.text)
             chunk.text = TextNormalizer.normalize(chunk.text)
@@ -33,6 +35,6 @@ class IngestionService:
             knowledge = self.validator.validate(knowledge)
 
             vector_record = self.embedding.create_vector_record(chunk, knowledge)
-            self.indexing.index(knowledge, vector_record)
+            self.indexing.index(knowledge, vector_record, doc_id=doc_id)
 
         return True

@@ -10,16 +10,9 @@ class IndexingService:
         self.graph = Neo4jRepository()
         self.vector = ChromaRepository()
 
-    def index(
-        self,
-        knowledge,
-        vector_record
-    ):
-
+    def index(self, knowledge, vector_record, doc_id: str):
         for node in knowledge.nodes:
-            self.graph.merge_node(node)
-
+            self.graph.merge_node(node, doc_id=doc_id)
         for edge in knowledge.edges:
-            self.graph.merge_edge(edge)
-
+            self.graph.merge_edge(edge, doc_id=doc_id)
         self.vector.add(vector_record)
