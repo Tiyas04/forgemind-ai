@@ -54,3 +54,20 @@ class GroqClient:
             max_tokens=2048
         )
         return response.choices[0].message.content
+
+    def generate_stream(self, prompt: str, system_prompt: str | None = None, temperature: float = 0.2):
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append({"role": "user", "content": prompt})
+
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            temperature=temperature,
+            max_tokens=settings.MAX_TOKENS,
+            stream=True
+        )
+        for chunk in response:
+            if chunk.choices and chunk.choices[0].delta and chunk.choices[0].delta.content:
+                yield chunk.choices[0].delta.content

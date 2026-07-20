@@ -145,7 +145,7 @@ export default function DocumentsPage() {
         </div>
 
         {/* Filters */}
-        <div className="mt-6 flex items-center justify-between border-b border-brand-primary/10 pb-4">
+        <div className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-brand-primary/10 pb-4">
           <div className="relative w-full max-w-sm flex items-center">
             <input
               type="text"
@@ -156,7 +156,7 @@ export default function DocumentsPage() {
             />
             <Search className="absolute left-3 h-4 w-4 text-brand-text-secondary/45" />
           </div>
-          <div className="text-[10px] text-brand-text-secondary flex items-center gap-1.5 bg-[#11141c] px-3 py-1.5 rounded border border-brand-primary/5">
+          <div className="text-[10px] text-brand-text-secondary flex items-center justify-center gap-1.5 bg-[#11141c] px-3 py-1.5 rounded border border-brand-primary/5 shrink-0">
             <Filter className="h-3.5 w-3.5 text-brand-primary" />
             <span>ACTIVE INDICES: {filteredDocs.length} FILES</span>
           </div>

@@ -10,6 +10,7 @@ interface AILog {
   response: string;
   confidence?: number;
   citations?: Array<{ document: string; chunk: string }>;
+  suggestedQuestions?: string[];
   timestamp: string;
 }
 
@@ -42,35 +43,70 @@ export default function ChatPage() {
     setTypingOutput("");
 
     try {
-      const res = await askQuestion(query);
-      const responseData = res.data || {};
-      const responseText = responseData.answer || "No response compiled by the reasoning engine.";
-      const confidence = responseData.confidence || 0.85;
-      const citations = responseData.citations || [];
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+      const response = await fetch(`${apiBase}/chat/stream`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question: query }),
+      });
 
-      let charIdx = 0;
-      let currentString = "";
-      const typeTimer = setInterval(() => {
-        if (charIdx < responseText.length) {
-          currentString += responseText[charIdx];
-          setTypingOutput(currentString);
-          charIdx++;
-        } else {
-          clearInterval(typeTimer);
-          setAiLoading(false);
-          setAiLogs((prev) => [
-            ...prev,
-            {
-              query,
-              response: responseText,
-              confidence,
-              citations,
-              timestamp: new Date().toLocaleTimeString(),
-            },
-          ]);
-          setTypingOutput("");
+      if (!response.ok) {
+        throw new Error("Stream response failed");
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error("Failed to get stream reader");
+      }
+
+      const decoder = new TextDecoder();
+      let done = false;
+      let accumulatedText = "";
+      let confidence = 0.95;
+      let citations: any[] = [];
+      let suggestedQuestions: string[] = [];
+
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: !done });
+          const lines = chunk.split("\n").filter(Boolean);
+          for (const line of lines) {
+            try {
+              const parsed = JSON.parse(line);
+              if (parsed.type === "meta") {
+                if (parsed.confidence !== undefined) confidence = parsed.confidence;
+                if (parsed.citations !== undefined) citations = parsed.citations;
+              } else if (parsed.type === "content") {
+                accumulatedText += parsed.delta;
+                setTypingOutput(accumulatedText);
+              } else if (parsed.type === "done") {
+                if (parsed.suggested_questions !== undefined) suggestedQuestions = parsed.suggested_questions;
+              }
+            } catch (err) {
+              // ignore partial line parsing errors
+            }
+          }
         }
-      }, 5);
+      }
+
+      setAiLoading(false);
+      setAiLogs((prev) => [
+        ...prev,
+        {
+          query,
+          response: accumulatedText,
+          confidence,
+          citations,
+          suggestedQuestions,
+          timestamp: new Date().toLocaleTimeString(),
+        },
+      ]);
+      setTypingOutput("");
     } catch (error) {
       console.error("Chat prompt execution failed:", error);
       setAiLoading(false);
@@ -105,12 +141,12 @@ export default function ChatPage() {
           </div>
         }
       >
-        <div className="flex flex-col gap-4 min-h-[500px]">
+        <div className="flex flex-col gap-4 min-h-[360px] sm:min-h-[500px]">
           
           {/* Main scrollable prompts window */}
           <div 
             ref={aiContainerRef}
-            className="flex-1 bg-[#09090b]/80 border border-brand-primary/10 rounded-xl p-4 flex flex-col text-xs leading-relaxed overflow-y-auto space-y-4 max-h-[380px] scrollbar-thin"
+            className="flex-1 bg-[#09090b]/80 border border-brand-primary/10 rounded-xl p-3 sm:p-4 flex flex-col text-xs leading-relaxed overflow-y-auto space-y-4 max-h-[340px] sm:max-h-[460px] scrollbar-thin"
           >
             {aiLogs.map((log, idx) => (
               <div key={idx} className="space-y-1.5 bg-[#0d0f14] p-3.5 rounded-xl border border-brand-primary/10">
@@ -139,6 +175,23 @@ export default function ChatPage() {
                       ))}
                     </div>
                   )}
+                  {log.suggestedQuestions && log.suggestedQuestions.length > 0 && (
+                    <div className="mt-3.5 border-t border-brand-primary/5 pt-2 flex flex-col gap-1.5 text-left select-none">
+                      <span className="text-[7.5px] text-brand-text-secondary uppercase tracking-widest font-extrabold select-none">Suggested Follow-ups:</span>
+                      <div className="flex flex-wrap gap-2">
+                        {log.suggestedQuestions.map((q, qi) => (
+                          <button
+                            key={qi}
+                            disabled={aiLoading}
+                            onClick={() => setPromptInput(q)}
+                            className="bg-[#09090b]/80 border border-brand-primary/10 hover:border-brand-primary/40 text-brand-text-primary hover:text-brand-primary text-[8.5px] px-2 py-1 rounded transition-all font-mono text-left cursor-pointer"
+                          >
+                            &gt; {q}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -165,7 +218,7 @@ export default function ChatPage() {
           </div>
 
           {/* Quick presets row */}
-          <div>
+          {/* <div>
             <span className="text-[9px] text-brand-text-secondary uppercase font-bold tracking-widest mb-2 flex items-center gap-1.5 select-none">
               <HelpCircle className="h-4 w-4 text-brand-primary" />
               QUICK CONSOLE TEMPLATE QUERIES
@@ -182,7 +235,7 @@ export default function ChatPage() {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Input control form */}
           <form onSubmit={handlePromptSubmit} className="relative flex items-center border border-brand-primary/10 rounded-xl overflow-hidden bg-[#0d0f14]">

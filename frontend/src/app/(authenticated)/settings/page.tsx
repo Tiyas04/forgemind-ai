@@ -29,7 +29,7 @@ export default function SettingsPage() {
               <span className="text-xs font-bold text-brand-text-primary tracking-wider uppercase">INGESTION & VECTOR DB</span>
             </div>
 
-            <div className="flex flex-col gap-1.5 text-[10px]">
+            {/* <div className="flex flex-col gap-1.5 text-[10px]">
               <label className="text-[8.5px] text-brand-text-secondary uppercase font-bold tracking-widest">OCR Language Target</label>
               <select 
                 value={ocrLanguage} 
@@ -41,7 +41,7 @@ export default function SettingsPage() {
                 <option value="SPANISH">SPANISH</option>
                 <option value="HINDI">HINDI (OISD Localized)</option>
               </select>
-            </div>
+            </div> */}
 
             <div className="flex flex-col gap-1.5 text-[10px] mt-2">
               <label className="text-[8.5px] text-brand-text-secondary uppercase font-bold tracking-widest">Cognitive RAG Model</label>

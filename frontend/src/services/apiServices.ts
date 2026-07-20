@@ -46,10 +46,15 @@ export const getCompliance = async () => {
   return response.data;
 };
 
-export const downloadComplianceReport = async (alertData: any) => {
-  const response = await api.post("/compliance/report", alertData, {
+export const downloadComplianceReport = async (data: any) => {
+  const response = await api.post("/compliance/report", data, {
     responseType: "blob",
   });
+  return response.data;
+};
+
+export const generateLLMComplianceReport = async () => {
+  const response = await api.post("/compliance/generate-llm-report");
   return response.data;
 };
 

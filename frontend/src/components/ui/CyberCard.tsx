@@ -38,7 +38,7 @@ export default function CyberCard({
 
       {/* Header section */}
       {(title || subtitle || headerAction) && (
-        <div className="flex items-center justify-between border-b border-brand-primary/10 pb-3 z-10 relative">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-brand-primary/10 pb-3 z-10 relative">
           <div className="flex flex-col text-left">
             {title && (
               <h3 className="font-heading text-sm font-bold tracking-wider text-brand-text-primary uppercase flex items-center gap-1.5">
@@ -51,7 +51,7 @@ export default function CyberCard({
               </p>
             )}
           </div>
-          {headerAction && <div className="text-xs">{headerAction}</div>}
+          {headerAction && <div className="text-xs shrink-0">{headerAction}</div>}
         </div>
       )}
 

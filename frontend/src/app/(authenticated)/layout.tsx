@@ -22,14 +22,10 @@ export default function AuthenticatedLayout({
   const [operatorName, setOperatorName] = useState("OP_GUEST");
 
   useEffect(() => {
-    // Enforce auth check (Temporarily disabled for development ease)
-    /*
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      router.push("/auth");
-      return;
+    // Auto-close sidebar on mobile devices on initial render
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      setSidebarOpen(false);
     }
-    */
 
     const email = localStorage.getItem("operatorEmail");
     if (email) {
@@ -57,6 +53,13 @@ export default function AuthenticatedLayout({
     { href: "/settings", label: "Settings", subtitle: "System configurations", icon: Settings },
   ];
 
+  const handleNavClick = (href: string) => {
+    router.push(href);
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("operatorEmail");
@@ -71,6 +74,19 @@ export default function AuthenticatedLayout({
 
       {/* Custom Cursor */}
       <CustomCursor />
+
+      {/* MOBILE BACKDROP OVERLAY */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 lg:hidden cursor-pointer"
+          />
+        )}
+      </AnimatePresence>
 
       {/* SIDE NAVIGATION BAR */}
       <AnimatePresence mode="wait">
@@ -119,7 +135,7 @@ export default function AuthenticatedLayout({
                   return (
                     <button
                       key={item.href}
-                      onClick={() => router.push(item.href)}
+                      onClick={() => handleNavClick(item.href)}
                       className={`group flex items-start gap-3 p-3 rounded-xl border transition-all duration-300 text-left select-none cursor-pointer ${
                         isActive 
                           ? "bg-brand-primary/10 border-brand-primary/30 text-brand-primary shadow-[0_0_15px_rgba(6,182,212,0.08)]" 
@@ -168,28 +184,26 @@ export default function AuthenticatedLayout({
       {/* MAIN CONTAINER */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto relative z-10">
         {/* TOP STATUS HEADER BAR */}
-        <header className="sticky top-0 bg-[#07070a]/80 backdrop-blur-md border-b border-brand-primary/10 px-5 py-4 flex items-center justify-between z-30">
+        <header className="sticky top-0 bg-[#07070a]/90 backdrop-blur-md border-b border-brand-primary/10 px-4 sm:px-5 py-3.5 flex items-center justify-between z-30">
           <div className="flex items-center space-x-3">
-            {!sidebarOpen && (
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="p-2 rounded-xl bg-[#11141c] border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/10 cursor-pointer transition-colors"
-                aria-label="Open Sidebar Menu"
-              >
-                <Menu className="h-4 w-4" />
-              </button>
-            )}
+            <button
+              onClick={() => setSidebarOpen(prev => !prev)}
+              className="lg:hidden p-2 rounded-xl bg-[#11141c] border border-brand-primary/20 text-brand-primary hover:bg-brand-primary/10 cursor-pointer transition-colors"
+              aria-label="Toggle Navigation Menu"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
             <div className="flex flex-col text-left">
-              <span className="text-xs font-bold text-brand-text-primary uppercase font-heading tracking-wider">
+              <span className="text-xs font-bold text-brand-text-primary uppercase font-heading tracking-wider truncate max-w-[200px] sm:max-w-none">
                 Industrial Console Dashboard
               </span>
-              <span className="text-[8px] text-brand-text-secondary tracking-widest uppercase">
+              <span className="text-[8px] text-brand-text-secondary tracking-widest uppercase hidden sm:block">
                 SCADA Telemetry & Knowledge Engine Interface
               </span>
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3 sm:space-x-4">
             <CyberBadge status="success" pulse={true} className="hidden sm:inline-flex">
               SYS_OPERATIONAL
             </CyberBadge>
@@ -202,7 +216,7 @@ export default function AuthenticatedLayout({
         </header>
 
         {/* PAGE CONTENT CONTAINER */}
-        <main className="grow p-5 md:p-6 overflow-y-auto relative">
+        <main className="grow p-3.5 sm:p-5 md:p-6 overflow-y-auto relative">
           {children}
         </main>
       </div>

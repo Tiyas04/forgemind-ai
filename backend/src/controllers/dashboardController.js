@@ -5,11 +5,51 @@ import { ApiResponse } from "../utils/Apiresponse.js";
 import axios from "axios";
 
 export const getDashboardData = asyncHandler(async (req, res) => {
-  // 1. Fetch document count & recent uploads from MongoDB
-  const totalDocuments = await Document.countDocuments({ owner: req.user._id });
+  // 1. Fetch document count & recent uploads from MongoDB (seed if empty)
+  let totalDocuments = await Document.countDocuments({ owner: req.user._id });
+  if (totalDocuments === 0) {
+    const defaultDocs = [
+      {
+        doc_id: "doc_turbine_01",
+        name: "Gas_Turbine_Generator_Operation_Manual.pdf",
+        size: "14.2 MB",
+        format: "PDF",
+        status: "OCR_DONE",
+        chunksCount: 38,
+        owner: req.user._id,
+      },
+      {
+        doc_id: "doc_heat_02",
+        name: "Zone_B_Heat_Exchanger_CAD_Layout.pdf",
+        size: "3.8 MB",
+        format: "PDF",
+        status: "OCR_DONE",
+        chunksCount: 8,
+        owner: req.user._id,
+      },
+      {
+        doc_id: "doc_astm_03",
+        name: "ASTM_D302_Pressure_Regulation_Standard.docx",
+        size: "5.1 MB",
+        format: "DOCX",
+        status: "OCR_DONE",
+        chunksCount: 14,
+        owner: req.user._id,
+      },
+    ];
+    await Document.insertMany(defaultDocs);
+    totalDocuments = 3;
+  }
+
   const recentUploads = await Document.find({ owner: req.user._id })
     .sort({ createdAt: -1 })
     .limit(5);
+
+  const totalChunksResult = await Document.aggregate([
+    { $match: { owner: req.user._id } },
+    { $group: { _id: null, total: { $sum: "$chunksCount" } } }
+  ]);
+  const totalChunks = totalChunksResult[0]?.total || 0;
 
   // 2. Fetch or seed equipment list
   let equipmentList = await Equipment.find({ owner: req.user._id });
@@ -52,6 +92,7 @@ export const getDashboardData = asyncHandler(async (req, res) => {
     neuralCoreLoad: totalDocuments > 0 ? 45 + totalDocuments * 5 : 45,
     bufferMem: 61,
     cpuTemp: 42,
+    totalChunks,
   };
 
   return res

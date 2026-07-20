@@ -40,39 +40,38 @@ import User from "../models/User.model.js";
 
 // export default protect;
 
-const verifyJWT = async (req,res,next) => {
+const verifyJWT = async (req, res, next) => {
   try {
-    const token = req.cookies?.accessToken
+    const token =
+      req.cookies?.accessToken ||
+      req.header("Authorization")?.replace("Bearer ", "");
 
-    if(!token){
-      return res
-      .status(401)
-      .json({
-        message: "Unauthorized request"
-      })
+    if (!token) {
+      return res.status(401).json({
+        message: "Unauthorized request - No authentication token provided",
+      });
     }
 
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-    
-    const user = await User.findById(decoded?._id).select("-password -refreshToken");
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    const user = await User.findById(decoded?._id).select(
+      "-password -refreshToken"
+    );
 
     if (!user) {
-      return res
-      .status(404)
-      .json({
-        message: "User not found"
-      })
+      return res.status(404).json({
+        message: "User not found",
+      });
     }
 
-    req.user = user
-    next()
-    
+    req.user = user;
+    next();
   } catch (error) {
-    console.log("JWT Verification Error:", error);
+    console.log("JWT Verification Error:", error.message);
     return res.status(401).json({
-      message: "Invalid or expired token"
+      message: "Invalid or expired token",
     });
   }
-}
+};
 
-export {verifyJWT}
+export { verifyJWT };
